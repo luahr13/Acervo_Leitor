@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Acervo_Leitor.Models.Livro>
+
+@{
+    ViewData["Title"] = "Index";
+
+    // Query string para busca e filtro
+    var currentBusca = Context.Request.Query["busca"].ToString();
+    var currentAtivo = Context.Request.Query["ativo"].ToString();
+    string[] statusOptions = new[] { "Todos", "Ativos", "Inativos" };
+}
+
+<h1>Livros</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Novo livro</a>
+</p>
+
+<form method="get" class="mb-3 d-flex align-items-center justify-content-between" id="filterForm">
+    <!-- Busca por Título ou Autor (à esquerda) -->
+    <input type="text"
+           name="busca"
+           class="form-control form-control-sm me-2"
+           style="max-width: 250px;"
+           placeholder="Buscar título ou autor..."
+           value="@currentBusca" />
+
+    <div class="d-flex align-items-center">
+        <!-- Filtro Ativo/Inativo/Todos (à direita) -->
+        <select name="ativo"
+                class="form-select form-select-sm me-2"
+                style="width: 120px;"
+                onchange="document.getElementById('filterForm').submit();">
+            @foreach (var s in statusOptions)
+            {
+                if ((s == "Todos" && string.IsNullOrEmpty(currentAtivo)) ||
+                (s == "Ativos" && currentAtivo == "true") ||
+                (s == "Inativos" && currentAtivo == "false"))
+                {
+                    <option value="@(s == "Ativos" ? "true" : s == "Inativos" ? "false" : "")" selected>@s</option>
+                }
+                else
+                {
+                    <option value="@(s == "Ativos" ? "true" : s == "Inativos" ? "false" : "")">@s</option>
+                }
+            }
+        </select>
+
+        <!-- Botão buscar -->
+        <button type="submit" class="btn btn-secondary btn-sm">Buscar</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Titulo)</th>
+            <th>@Html.DisplayNameFor(model => model.Autor)</th>
+            <th>@Html.DisplayNameFor(model => model.CodigoExemplar)</th>
+            <th>@Html.DisplayNameFor(model => model.Ativo)</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Titulo</td>
+                <td>@item.Autor</td>
+                <td>@item.CodigoExemplar</td>
+                <td>
+                    <input type="checkbox" disabled @(item.Ativo ? "checked" : "") />
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Editar</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detalhes</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Deletar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

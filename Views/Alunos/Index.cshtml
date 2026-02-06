@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Acervo_Leitor.Models.Aluno>
+
+@{
+    ViewData["Title"] = "Alunos";
+
+    // Buscar query string
+    var currentBusca = Context.Request.Query["busca"].ToString();
+    var currentAtivo = Context.Request.Query["ativo"].ToString();
+    string[] statusOptions = new[] { "Todos", "Ativos", "Inativos" };
+}
+
+<h1>Alunos</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Novo aluno</a>
+</p>
+
+<form method="get" class="mb-3 d-flex align-items-center justify-content-between" id="filterForm">
+    <!-- Busca por nome -->
+    <input type="text" name="busca" class="form-control form-control-sm me-2" style="max-width: 250px;" placeholder="Buscar por nome..." value="@currentBusca" />
+
+    <div class="d-flex align-items-center">
+        <!-- Filtro de Ativo/Inativo -->
+        <select name="ativo" class="form-select form-select-sm me-2" style="width: 120px;" onchange="document.getElementById('filterForm').submit();">
+            @foreach (var s in statusOptions)
+            {
+                if ((s == "Todos" && string.IsNullOrEmpty(currentAtivo)) ||
+                (s == "Ativos" && currentAtivo == "true") ||
+                (s == "Inativos" && currentAtivo == "false"))
+                {
+                    <option value="@(s == "Ativos" ? "true" : s == "Inativos" ? "false" : "")" selected>@s</option>
+                }
+                else
+                {
+                    <option value="@(s == "Ativos" ? "true" : s == "Inativos" ? "false" : "")">@s</option>
+                }
+            }
+        </select>
+
+        <button type="submit" class="btn btn-secondary btn-sm">Buscar</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Turma</th>
+            <th>Telefone</th>
+            <th>Ativo</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var aluno in Model)
+        {
+            <tr>
+                <td>@aluno.Nome</td>
+                <td>@aluno.Turma?.Nome</td>
+                <td>@aluno.Telefone</td>
+                <td>
+                    <input type="checkbox" disabled @(aluno.Ativo ? "checked" : "") />
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@aluno.Id" class="btn btn-sm btn-primary">Editar</a>
+                    <a asp-action="Details" asp-route-id="@aluno.Id" class="btn btn-sm btn-info">Detalhes</a>
+                    <a asp-action="Delete" asp-route-id="@aluno.Id" class="btn btn-sm btn-danger">Deletar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

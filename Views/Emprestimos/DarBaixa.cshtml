@@ -1,0 +1,24 @@
+﻿@model Acervo_Leitor.Models.Emprestimo
+
+<h2>Dar baixa no empréstimo</h2>
+
+<p><strong>Aluno:</strong> @Model.Aluno.Nome</p>
+<p><strong>Livro:</strong> @Model.Livro.Titulo</p>
+<p><strong>Emprestado em:</strong> @Model.DataEmprestimo.ToShortDateString()</p>
+
+<form asp-action="DarBaixa" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <div class="form-group">
+        <label for="dataDevolucao">Data da devolução</label>
+        <input type="date"
+               id="dataDevolucao"
+               name="dataDevolucao"
+               class="form-control"
+               value="@DateTime.Now.ToString("yyyy-MM-dd")"
+               required />
+    </div>
+
+    <button type="submit" class="btn btn-success mt-2">Confirmar baixa</button>
+</form>

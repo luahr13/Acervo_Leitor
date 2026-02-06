@@ -1,0 +1,93 @@
+﻿@model Acervo_Leitor.Models.Emprestimo
+
+@{
+    ViewData["Title"] = "Detalhes do Empréstimo";
+}
+
+<h1>Detalhes</h1>
+
+<div>
+    <h4>Empréstimo</h4>
+    <hr />
+
+    <dl class="row">
+        <dt class="col-sm-3">
+            Aluno
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Aluno?.Nome
+        </dd>
+
+        <dt class="col-sm-3">
+            Livro
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Livro?.Titulo
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.DataEmprestimo)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.DataEmprestimo)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.DataPrevistaDevolucao)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.DataPrevistaDevolucao)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.DataDevolucao)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.DataDevolucao)
+        </dd>
+    </dl>
+</div>
+
+<hr />
+
+@if (Model.DataDevolucao == null)
+{
+    <h5>Registrar devolução</h5>
+
+    <form asp-action="DarBaixa" method="post">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" name="id" value="@Model.Id" />
+
+        <div class="form-group">
+            <label for="dataDevolucao">Data da devolução</label>
+            <input type="date"
+                   id="dataDevolucao"
+                   name="dataDevolucao"
+                   class="form-control"
+                   value="@DateTime.Now.ToString("yyyy-MM-dd")"
+                   required />
+        </div>
+
+        <button type="submit" class="btn btn-success mt-2">
+            Confirmar baixa
+        </button>
+    </form>
+}
+else
+{
+    <div class="alert alert-success mt-3">
+        ✔ Empréstimo finalizado em
+        <strong>@Model.DataDevolucao?.ToString("dd/MM/yyyy")</strong>
+    </div>
+}
+
+<div class="mt-4">
+    @if (Model.DataDevolucao == null)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id">Editar</a>
+        <span> | </span>
+    }
+
+    <a asp-action="Index">Voltar para a lista</a>
+</div>

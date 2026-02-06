@@ -1,0 +1,51 @@
+﻿@model Acervo_Leitor.Models.Emprestimo
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Editar</h1>
+
+<h4>Emprestimo</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="AlunoId" class="control-label"></label>
+                <select asp-for="AlunoId" class="form-control" asp-items="ViewBag.AlunoId"></select>
+                <span asp-validation-for="AlunoId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LivroId" class="control-label"></label>
+                <select asp-for="LivroId" class="form-control" asp-items="ViewBag.LivroId">
+                    <option value="">-- Selecione o livro --</option>
+                </select>
+                <span asp-validation-for="LivroId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataEmprestimo" class="control-label"></label>
+                <input asp-for="DataEmprestimo" class="form-control" />
+                <span asp-validation-for="DataEmprestimo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataPrevistaDevolucao" class="control-label"></label>
+                <input asp-for="DataPrevistaDevolucao" class="form-control" />
+                <span asp-validation-for="DataPrevistaDevolucao" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Salvar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Voltar para a lista</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

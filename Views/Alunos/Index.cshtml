@@ -70,3 +70,52 @@
         }
     </tbody>
 </table>
+
+@{
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+}
+
+@if (totalPages > 1)
+{
+    <nav aria-label="Paginação de alunos">
+        <ul class="pagination justify-content-center mt-4">
+
+            <!-- Anterior -->
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(currentPage - 1)"
+                   asp-route-busca="@currentBusca"
+                   asp-route-ativo="@currentAtivo">
+                    ‹
+                </a>
+            </li>
+
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@i"
+                       asp-route-busca="@currentBusca"
+                       asp-route-ativo="@currentAtivo">
+                        @i
+                    </a>
+                </li>
+            }
+
+            <!-- Próximo -->
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(currentPage + 1)"
+                   asp-route-busca="@currentBusca"
+                   asp-route-ativo="@currentAtivo">
+                    ›
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+}

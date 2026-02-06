@@ -20,36 +20,58 @@ namespace Acervo_Leitor.Controllers
         }
 
         // GET: Emprestimos
-        public async Task<IActionResult> Index(string status, string busca)
+        public async Task<IActionResult> Index(string status, string busca, int page = 1)
         {
+            int pageSize = 10;
+
             var emprestimos = _context.Emprestimos
                 .Include(e => e.Aluno)
                 .Include(e => e.Livro)
                 .AsQueryable();
 
-            // Filtrar pelo status
+            // 📌 Filtrar pelo status
             if (!string.IsNullOrEmpty(status) && status != "Todos")
             {
                 emprestimos = status switch
                 {
                     "Baixa" => emprestimos.Where(e => e.DataDevolucao != null),
-                    "Aberto" => emprestimos.Where(e => e.DataDevolucao == null && e.DataPrevistaDevolucao >= DateTime.Now),
-                    "Atraso" => emprestimos.Where(e => e.DataDevolucao == null && e.DataPrevistaDevolucao < DateTime.Now),
+
+                    "Aberto" => emprestimos.Where(e =>
+                        e.DataDevolucao == null &&
+                        e.DataPrevistaDevolucao >= DateTime.Now),
+
+                    "Atraso" => emprestimos.Where(e =>
+                        e.DataDevolucao == null &&
+                        e.DataPrevistaDevolucao < DateTime.Now),
+
                     _ => emprestimos
                 };
             }
 
-            // Filtrar por aluno ou livro
+            // 🔍 Filtrar por aluno ou livro
             if (!string.IsNullOrEmpty(busca))
             {
                 busca = busca.ToLower();
+
                 emprestimos = emprestimos.Where(e =>
                     e.Aluno.Nome.ToLower().Contains(busca) ||
-                    e.Livro.Titulo.ToLower().Contains(busca)
-                );
+                    e.Livro.Titulo.ToLower().Contains(busca));
             }
 
-            return View(await emprestimos.ToListAsync());
+            // 📊 Paginação
+            int totalItems = await emprestimos.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var resultado = await emprestimos
+                .OrderByDescending(e => e.DataEmprestimo)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
+            return View(resultado);
         }
 
         // GET: Emprestimos/Details/5

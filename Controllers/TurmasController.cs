@@ -20,9 +20,25 @@ namespace Acervo_Leitor.Controllers
         }
 
         // GET: Turmas
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.Turmas.ToListAsync());
+            int pageSize = 1;
+
+            var turmas = _context.Turmas.AsQueryable();
+
+            int totalItems = await turmas.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var resultado = await turmas
+                .OrderBy(t => t.Nome)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
+            return View(resultado);
         }
 
         // GET: Turmas/Details/5

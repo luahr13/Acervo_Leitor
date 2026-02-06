@@ -20,22 +20,41 @@ namespace Acervo_Leitor.Controllers
         }
 
         // GET: Livros
-        public async Task<IActionResult> Index(string busca, string ativo)
+        public async Task<IActionResult> Index(string busca, string ativo, int page = 1)
         {
+            int pageSize = 10;
+
             var livros = _context.Livros.AsQueryable();
 
+            // 🔍 Busca por título ou autor
             if (!string.IsNullOrEmpty(busca))
             {
-                livros = livros.Where(l => l.Titulo.Contains(busca) || l.Autor.Contains(busca));
+                livros = livros.Where(l =>
+                    l.Titulo.Contains(busca) ||
+                    l.Autor.Contains(busca));
             }
 
+            // 📌 Filtro Ativo/Inativo
             if (!string.IsNullOrEmpty(ativo))
             {
                 bool isAtivo = ativo == "true";
                 livros = livros.Where(l => l.Ativo == isAtivo);
             }
 
-            return View(await livros.ToListAsync());
+            // 📊 Paginação
+            int totalItems = await livros.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var resultado = await livros
+                .OrderBy(l => l.Titulo)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
+            return View(resultado);
         }
 
         // GET: Livros/Details/5

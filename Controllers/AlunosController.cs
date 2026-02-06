@@ -20,24 +20,36 @@ namespace Acervo_Leitor.Controllers
         }
 
         // GET: Alunos
-        public async Task<IActionResult> Index(string busca, string ativo)
+        public async Task<IActionResult> Index(
+            string busca,
+            bool? ativo,
+            int page = 1,
+            int pageSize = 10)
         {
-            var alunos = _context.Alunos.Include(a => a.Turma).AsQueryable();
+            var query = _context.Alunos
+                .Include(a => a.Turma)
+                .AsQueryable();
 
-            // Filtrar por nome
             if (!string.IsNullOrEmpty(busca))
-            {
-                alunos = alunos.Where(a => a.Nome.Contains(busca));
-            }
+                query = query.Where(a => a.Nome.Contains(busca));
 
-            // Filtrar por ativo
-            if (!string.IsNullOrEmpty(ativo))
-            {
-                bool isAtivo = ativo == "true";
-                alunos = alunos.Where(a => a.Ativo == isAtivo);
-            }
+            if (ativo.HasValue)
+                query = query.Where(a => a.Ativo == ativo);
 
-            return View(await alunos.ToListAsync());
+            var totalItems = await query.CountAsync();
+
+            var alunos = await query
+                .OrderBy(a => a.Nome)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            ViewBag.Busca = busca;
+            ViewBag.Ativo = ativo;
+
+            return View(alunos);
         }
 
         // GET: Alunos/Details/5

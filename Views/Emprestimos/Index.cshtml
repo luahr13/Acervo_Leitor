@@ -3,89 +3,135 @@
 @{
     ViewData["Title"] = "Empréstimos";
 
-    // Pegar o status da query string de forma segura
     var currentStatus = Context.Request.Query["status"].ToString();
     string[] statuses = new[] { "Todos", "Baixa", "Aberto", "Atraso" };
-}
 
-<h1>Empréstimos</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">Novo empréstimo</a>
-</p>
-
-@{
     var currentBusca = Context.Request.Query["busca"].ToString();
 }
 
-<form method="get" class="mb-3 d-flex align-items-center justify-content-between" id="filterForm">
-    <!-- Busca por aluno ou livro (menor que padrão, à esquerda) -->
-    <input type="text" name="busca" class="form-control form-control-sm me-2" style="max-width: 250px;" placeholder="Buscar aluno ou livro..." value="@currentBusca" />
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold">🔄 Empréstimos</h2>
 
-    <div class="d-flex align-items-center">
-        <!-- Filtro de status (menor que padrão, à direita) -->
-        <select name="status" class="form-select form-select-sm me-2" style="width: 120px;" onchange="document.getElementById('filterForm').submit();">
-            @foreach (var s in statuses)
-            {
-                if (s == currentStatus)
-                {
-                    <option value="@s" selected>@s</option>
-                }
-                else
-                {
-                    <option value="@s">@s</option>
-                }
-            }
-        </select>
+    <a asp-action="Create" class="btn btn-primary shadow-sm">
+        ➕ Novo Empréstimo
+    </a>
+</div>
 
-        <!-- Botão Buscar -->
-        <button type="submit" class="btn btn-secondary btn-sm">Buscar</button>
+<!-- FILTROS -->
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+
+        <form method="get" class="d-flex align-items-end gap-3" id="filterForm">
+
+            <!-- BUSCA -->
+            <div style="width:260px;">
+                <label class="form-label">Aluno ou Livro</label>
+                <input type="text"
+                       name="busca"
+                       value="@currentBusca"
+                       class="form-control form-control-sm"
+                       placeholder="Buscar aluno ou livro..." />
+            </div>
+
+            <!-- BOTÕES -->
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success btn-sm px-3">
+                    🔍 Filtrar
+                </button>
+
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-3">
+                    ❌ Limpar
+                </a>
+            </div>
+
+            <!-- STATUS -->
+            <div class="ms-auto" style="width:160px;">
+                <label class="form-label">Status</label>
+                <select name="status"
+                        class="form-select form-select-sm"
+                        onchange="document.getElementById('filterForm').submit();">
+
+                    @foreach (var s in statuses)
+                    {
+                        if (s == currentStatus)
+                        {
+                            <option value="@s" selected>@s</option>
+                        }
+                        else
+                        {
+                            <option value="@s">@s</option>
+                        }
+                    }
+                </select>
+            </div>
+        </form>
+
     </div>
-</form>
+</div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Aluno</th>
-            <th>Livro</th>
-            <th>Data Empréstimo</th>
-            <th>Data Prevista</th>
-            <th>Data Devolução</th>
-            <th>Status</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            // Definir classe do status com base na propriedade computada
-            var statusClass = item.Status switch
-            {
-                "Baixa" => "badge bg-success",
-                "Aberto" => "badge bg-warning text-dark",
-                "Atraso" => "badge bg-danger",
-                _ => "badge bg-secondary"
-            };
+<!-- TABELA -->
+<div class="card shadow-sm">
+    <div class="card-body p-0">
 
-            <tr>
-                <td>@item.Aluno?.Nome</td>
-                <td>@item.Livro?.Titulo</td>
-                <td>@item.DataEmprestimo.ToString("dd/MM/yyyy")</td>
-                <td>@(item.DataPrevistaDevolucao.HasValue ? item.DataPrevistaDevolucao.Value.ToString("dd/MM/yyyy") : "")</td>
-                <td>@(item.DataDevolucao.HasValue ? item.DataDevolucao.Value.ToString("dd/MM/yyyy") : "")</td>
-                <td>
-                    <span class="@statusClass">@item.Status</span>
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Editar</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detalhes</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Deletar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <table class="table table-hover table-striped align-middle mb-0">
+            <thead class="table-custom">
+                <tr>
+                    <th>Aluno</th>
+                    <th>Livro</th>
+                    <th>Data Empréstimo</th>
+                    <th>Prevista</th>
+                    <th>Devolução</th>
+                    <th>Status</th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
 
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var statusClass = item.Status switch
+                    {
+                        "Baixa" => "badge bg-success",
+                        "Aberto" => "badge bg-warning text-dark",
+                        "Atraso" => "badge bg-danger",
+                        _ => "badge bg-secondary"
+                    };
+
+                    <tr>
+                        <td class="fw-semibold">@item.Aluno?.Nome</td>
+                        <td>@item.Livro?.Titulo</td>
+                        <td>@item.DataEmprestimo.ToString("dd/MM/yyyy")</td>
+                        <td>@(item.DataPrevistaDevolucao?.ToString("dd/MM/yyyy"))</td>
+                        <td>@(item.DataDevolucao?.ToString("dd/MM/yyyy"))</td>
+
+                        <td>
+                            <span class="@statusClass">@item.Status</span>
+                        </td>
+
+                        <td class="text-end">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
+                                ✏️ Editar
+                            </a>
+
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">
+                                🔍 Detalhes
+                            </a>
+
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                                🗑️ Deletar
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+<!-- PAGINAÇÃO -->
 @{
     int currentPage = ViewBag.CurrentPage;
     int totalPages = ViewBag.TotalPages;
@@ -93,18 +139,15 @@
 
 @if (totalPages > 1)
 {
-    <nav aria-label="Paginação de empréstimos">
-        <ul class="pagination justify-content-center mt-4">
+    <nav class="mt-3">
+        <ul class="pagination justify-content-center">
 
-            <!-- Anterior -->
             <li class="page-item @(currentPage == 1 ? "disabled" : "")">
                 <a class="page-link"
                    asp-action="Index"
                    asp-route-page="@(currentPage - 1)"
                    asp-route-busca="@currentBusca"
-                   asp-route-status="@currentStatus">
-                    ‹
-                </a>
+                   asp-route-status="@currentStatus">‹</a>
             </li>
 
             @for (int i = 1; i <= totalPages; i++)
@@ -114,21 +157,16 @@
                        asp-action="Index"
                        asp-route-page="@i"
                        asp-route-busca="@currentBusca"
-                       asp-route-status="@currentStatus">
-                        @i
-                    </a>
+                       asp-route-status="@currentStatus">@i</a>
                 </li>
             }
 
-            <!-- Próximo -->
             <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
                 <a class="page-link"
                    asp-action="Index"
                    asp-route-page="@(currentPage + 1)"
                    asp-route-busca="@currentBusca"
-                   asp-route-status="@currentStatus">
-                    ›
-                </a>
+                   asp-route-status="@currentStatus">›</a>
             </li>
 
         </ul>

@@ -20,16 +20,25 @@ namespace Acervo_Leitor.Controllers
         }
 
         // GET: Turmas
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(string busca, string status, int page = 1)
         {
-            int pageSize = 1;
+            int pageSize = 10;
 
-            var turmas = _context.Turmas.AsQueryable();
+            var query = _context.Turmas.AsQueryable();
 
-            int totalItems = await turmas.CountAsync();
+            if (!string.IsNullOrEmpty(busca))
+                query = query.Where(t => t.Nome.Contains(busca));
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                bool ativa = bool.Parse(status);
+                query = query.Where(t => t.Ativa == ativa);
+            }
+
+            int totalItems = await query.CountAsync();
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
-            var resultado = await turmas
+            var turmas = await query
                 .OrderBy(t => t.Nome)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -37,8 +46,10 @@ namespace Acervo_Leitor.Controllers
 
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
+            ViewBag.Busca = busca;
+            ViewBag.Status = status;
 
-            return View(resultado);
+            return View(turmas);
         }
 
         // GET: Turmas/Details/5

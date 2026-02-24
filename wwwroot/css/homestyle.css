@@ -1,0 +1,67 @@
+﻿/* NAVBAR */
+.navbar {
+    height: 64px;
+    z-index: 1050;
+}
+
+/* LAYOUT BASE */
+.app-layout {
+    display: flex;
+    margin-top: 64px;
+    height: calc(100vh - 64px);
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 220px;
+    background: #111827;
+    padding-top: 10px;
+    flex-shrink: 0;
+}
+
+    /* LINKS */
+    .sidebar .nav-link {
+        color: #fff;
+        font-size: 0.95rem;
+        padding: 10px 12px;
+        border-radius: 6px;
+        margin: 4px 8px;
+    }
+
+        .sidebar .nav-link:hover {
+            background-color: #0d6efd;
+        }
+
+/* WRAPPER CONTEÚDO + FOOTER */
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 100%;
+}
+
+/* CONTEÚDO */
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #f8f9fa;
+    overflow-x: hidden;
+}
+
+/* FOOTER */
+.footer {
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+    padding: 12px;
+    font-size: 0.9rem;
+}
+
+/* REMOVE SCROLL LATERAL */
+body {
+    overflow-x: hidden;
+}
+
+.table-custom th {
+    background-color: #2489ff !important;
+    color: white;
+}

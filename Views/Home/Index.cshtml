@@ -1,8 +1,92 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Acervo Leitor";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="text-center mb-5">
+
+        <h1 class="fw-bold text-primary">Acervo Leitor</h1>
+        <p class="text-muted fs-5">
+            Sistema de Gestão de Biblioteca Escolar
+        </p>
+    </div>
+
+    <!-- DASHBOARD CARDS -->
+    <div class="row g-4 mb-5">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 text-center p-3 position-relative">
+                <a asp-controller="Livros" asp-action="Index" class="stretched-link"></a>
+
+                <div class="fs-1 text-primary">📚</div>
+                <h5 class="fw-bold">Livros</h5>
+                <p class="fs-3 fw-bold">@ViewBag.LivrosAtivos</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 text-center p-3">
+                <a asp-controller="Alunos" asp-action="Index" class="stretched-link"></a>
+
+                <div class="fs-1 text-success">👩‍🎓</div>
+                <h5 class="fw-bold">Alunos</h5>
+                <p class="fs-3 fw-bold text-dark">@ViewBag.AlunosAtivos</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 text-center p-3">
+                <a asp-controller="Emprestimos" asp-action="Index" class="stretched-link"></a>
+
+                <div class="fs-1 text-warning">🔄</div>
+                <h5 class="fw-bold">Empréstimos</h5>
+                <p class="fs-3 fw-bold text-dark">@ViewBag.EmprestimosBaixa</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 text-center p-3 position-relative">
+
+                <a asp-controller="Emprestimos"
+                   asp-action="Index"
+                   asp-route-status="Atraso"
+                   class="stretched-link"></a>
+
+                <div class="fs-1 text-danger">⏰</div>
+                <h5 class="fw-bold">Atrasados</h5>
+                <p class="fs-3 fw-bold text-dark">@ViewBag.EmprestimosAtraso</p>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- AÇÕES RÁPIDAS -->
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <a asp-controller="Livros" asp-action="Create" class="card shadow-sm border-0 p-4 text-decoration-none text-dark h-100">
+                <h4>📘 Cadastrar Livro</h4>
+                <p class="text-muted">Adicionar novo exemplar ao acervo</p>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a asp-controller="Emprestimos" asp-action="Create" class="card shadow-sm border-0 p-4 text-decoration-none text-dark h-100">
+                <h4>🔄 Novo Empréstimo</h4>
+                <p class="text-muted">Registrar empréstimo de livro</p>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a asp-controller="Alunos" asp-action="Index" class="card shadow-sm border-0 p-4 text-decoration-none text-dark h-100">
+                <h4>👩‍🎓 Gerenciar Alunos</h4>
+                <p class="text-muted">Consultar e editar alunos</p>
+            </a>
+        </div>
+
+    </div>
+
 </div>

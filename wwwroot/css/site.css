@@ -17,10 +17,6 @@ html {
   min-height: 100%;
 }
 
-body {
-  margin-bottom: 60px;
-}
-
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
   text-align: end;
@@ -29,3 +25,42 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.card {
+    border-radius: 16px;
+    transition: all 0.2s ease-in-out;
+}
+
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+body {
+    background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.card {
+    border-radius: 16px;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover,
+.btn-outline-danger:hover {
+    color: #fff;
+}
+
+.table thead th {
+    font-weight: 600;
+    color: #374151;
+}
+
+.badge {
+    font-size: 0.85rem;
+    padding: 6px 10px;
+}
+

@@ -3,71 +3,129 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// DB
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+// Detecta modo demo via env var
+var isDemo = Environment.GetEnvironmentVariable("DEMO_MODE") == "true";
+if (isDemo)
+    builder.Environment.EnvironmentName = "Demo";
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+// Config padrão (não sobrescrever pipeline do .NET)
+if (builder.Environment.EnvironmentName == "Demo")
+{
+    builder.Configuration.AddJsonFile("appsettings.Demo.json", optional: false);
+}
+
+// DB config
+if (builder.Environment.EnvironmentName == "Demo")
+{
+    Console.WriteLine("🧪 MODO DEMO - SQLITE");
+
+    var sqlitePath = Path.Combine(AppContext.BaseDirectory, "demo.db");
+    var sqliteConn = $"Data Source={sqlitePath}";
+
+    builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseSqlite(sqliteConn));
+    builder.WebHost.UseUrls("http://localhost:5000");
+}
+else
+{
+    Console.WriteLine("🧠 DEV - SQL SERVER");
+
+    var sql = builder.Configuration.GetConnectionString("DefaultConnection")
+        ?? throw new Exception("DefaultConnection missing");
+
+    builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(sql));
+}
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// Identity + Roles
-builder.Services
-    .AddDefaultIdentity<IdentityUser>(options =>
-    {
-        options.SignIn.RequireConfirmedAccount = false;
-    })
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-
-// 🔐 Login obrigatório global
-builder.Services.AddControllersWithViews(options =>
+// Identity
+builder.Services.AddDefaultIdentity<IdentityUser>(o =>
 {
-    var policy = new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build();
+    o.SignIn.RequireConfirmedAccount = false;
+    o.Password.RequireDigit = false;
+    o.Password.RequireUppercase = false;
+    o.Password.RequireLowercase = false;
+    o.Password.RequireNonAlphanumeric = false;
+})
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<ApplicationDbContext>();
 
-    options.Filters.Add(new AuthorizeFilter(policy));
+// Auth global
+builder.Services.AddControllersWithViews(o =>
+{
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    o.Filters.Add(new AuthorizeFilter(policy));
 });
 
-// ✅ LIBERAR PÁGINAS DO IDENTITY (Razor Pages)
-builder.Services.AddRazorPages(options =>
+builder.Services.AddRazorPages(o =>
 {
-    options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/Login");
-    options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/Register");
-    options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/ForgotPassword");
+    o.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/Login");
+    o.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/Register");
 });
 
 var app = builder.Build();
+
+// Seed Demo
+async Task SeedDemoAsync()
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.EnsureCreated();
+
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    if (!await roleManager.RoleExistsAsync("Admin"))
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+
+    var email = "anailda@demo.com";
+    if (await userManager.FindByEmailAsync(email) == null)
+    {
+        var user = new IdentityUser { UserName = email, Email = email };
+        await userManager.CreateAsync(user, "Anailda@");
+        await userManager.AddToRoleAsync(user, "Admin");
+    }
+}
+
+if (builder.Environment.EnvironmentName == "Demo")
+    await SeedDemoAsync();
 
 // Pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
 }
-else
+else if (!builder.Environment.IsEnvironment("Demo"))
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+if (!builder.Environment.IsEnvironment("Demo"))
+    app.UseHttpsRedirection();
+
 app.UseStaticFiles();
-
 app.UseRouting();
-
-// 🔑 ESSENCIAL (estava faltando)
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
+app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+// Abrir navegador após subir
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    if (builder.Environment.EnvironmentName == "Demo")
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = "http://localhost:5000",
+            UseShellExecute = true
+        });
+    }
+});
 
 app.Run();

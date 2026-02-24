@@ -185,5 +185,17 @@ namespace Acervo_Leitor.Controllers
         {
             return _context.Livros.Any(e => e.Id == id);
         }
+
+        // GET: Livros/Nome
+        [HttpGet]
+        public async Task<IActionResult> BuscarLivros(string termo)
+        {
+            var livros = await _context.Livros
+                .Where(l => l.Titulo.Contains(termo))
+                .Select(l => new { l.Id, l.Titulo })
+                .ToListAsync();
+
+            return Json(livros);
+        }
     }
 }

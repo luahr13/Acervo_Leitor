@@ -1,90 +1,157 @@
 ﻿@model IEnumerable<Acervo_Leitor.Models.Turma>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Turmas";
+
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
 }
 
-<h1>Turmas</h1>
+<div class="container-fluid">
 
-<p>
-    <a asp-action="Create">Nova turma</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AnoLetivo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ativa)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AnoLetivo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ativa)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Deletar</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <!-- TÍTULO -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold">📚 Turmas</h2>
 
-@{
-    int currentPage = ViewBag.CurrentPage;
-    int totalPages = ViewBag.TotalPages;
-}
+        <a asp-action="Create" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-circle"></i> Nova Turma
+        </a>
+    </div>
 
-@if (totalPages > 1)
-{
-    <nav aria-label="Paginação de turmas">
-        <ul class="pagination justify-content-center mt-4">
+    <!-- FILTRO -->
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+            <form method="get" class="d-flex align-items-end gap-2">
 
-            <!-- Anterior -->
-            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-                <a class="page-link"
-                   asp-action="Index"
-                   asp-route-page="@(currentPage - 1)">
-                    ‹
-                </a>
-            </li>
+                <!-- BUSCA NOME (ESQUERDA) -->
+                <div style="width:220px;">
+                    <label class="form-label">Nome da turma</label>
+                    <input type="text" name="busca" value="@ViewBag.Busca"
+                           class="form-control form-control-sm"
+                           placeholder="Ex: 7º A" />
+                </div>
 
-            @for (int i = 1; i <= totalPages; i++)
-            {
-                <li class="page-item @(i == currentPage ? "active" : "")">
+                <!-- BOTÕES -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success btn-sm px-3">
+                        🔍 Filtrar
+                    </button>
+
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-3">
+                        ❌ Limpar
+                    </a>
+                </div>
+
+                <!-- STATUS (DIREITA) -->
+                <div class="ms-auto" style="width:150px;">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="">Todas</option>
+                        <option value="true" selected="@(ViewBag.Status?.ToString() == "true")">Ativas</option>
+                        <option value="false" selected="@(ViewBag.Status?.ToString() == "false")">Inativas</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TABELA -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+
+            <table class="table table-hover table-striped mb-0 align-middle">
+                <thead class="table-custom">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Ano Letivo</th>
+                        <th>Status</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@item.Nome</td>
+                            <td>@item.AnoLetivo</td>
+
+                            <td>
+                                @if (item.Ativa)
+                                {
+                                    <span class="badge bg-success">Ativa</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Inativa</span>
+                                }
+                            </td>
+
+                            <td class="text-end">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
+                                    ✏️ Editar
+                                </a>
+
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">
+                                    🔍 Detalhes
+                                </a>
+
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                                    🗑️ Deletar
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+    <!-- PAGINAÇÃO -->
+    @if (totalPages > 1)
+    {
+        <nav class="mt-3">
+            <ul class="pagination justify-content-center">
+
+                <!-- ANTERIOR -->
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
                     <a class="page-link"
                        asp-action="Index"
-                       asp-route-page="@i">
-                        @i
+                       asp-route-page="@(currentPage - 1)"
+                       asp-route-busca="@ViewBag.Busca"
+                       asp-route-status="@ViewBag.Status">
+                        «
                     </a>
                 </li>
-            }
 
-            <!-- Próximo -->
-            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-                <a class="page-link"
-                   asp-action="Index"
-                   asp-route-page="@(currentPage + 1)">
-                    ›
-                </a>
-            </li>
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="@i"
+                           asp-route-busca="@ViewBag.Busca"
+                           asp-route-status="@ViewBag.Status">
+                            @i
+                        </a>
+                    </li>
+                }
 
-        </ul>
-    </nav>
-}
+                <!-- PRÓXIMO -->
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@(currentPage + 1)"
+                       asp-route-busca="@ViewBag.Busca"
+                       asp-route-status="@ViewBag.Status">
+                        »
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    }
+
+</div>

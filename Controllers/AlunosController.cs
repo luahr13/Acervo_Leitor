@@ -209,5 +209,17 @@ namespace Acervo_Leitor.Controllers
         {
             return _context.Alunos.Any(e => e.Id == id);
         }
+
+        //GET: Aluno/Nome
+        [HttpGet]
+        public async Task<IActionResult> BuscarAlunos(string termo)
+        {
+            var alunos = await _context.Alunos
+                .Where(a => a.Nome.Contains(termo))
+                .Select(a => new { a.Id, a.Nome })
+                .ToListAsync();
+
+            return Json(alunos);
+        }
     }
 }

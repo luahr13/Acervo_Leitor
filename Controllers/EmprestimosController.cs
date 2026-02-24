@@ -97,29 +97,95 @@ namespace Acervo_Leitor.Controllers
         // GET: Emprestimos/Create
         public IActionResult Create()
         {
-            // Apenas alunos ativos
-            ViewData["AlunoId"] = new SelectList(_context.Alunos.Where(a => a.Ativo).OrderBy(a => a.Nome), "Id", "Nome");
+            // 🔹 Alunos ativos com Nome + Turma
+            var alunos = _context.Alunos
+                .Include(a => a.Turma)
+                .Where(a => a.Ativo)
+                .Select(a => new
+                {
+                    a.Id,
+                    Nome = a.Nome + " - " + a.Turma.Nome
+                })
+                .OrderBy(a => a.Nome)
+                .ToList();
 
-            // Apenas livros ativos
-            ViewData["LivroId"] = new SelectList(_context.Livros.Where(l => l.Ativo).OrderBy(l => l.Titulo), "Id", "Titulo");
+            ViewData["AlunoId"] = new SelectList(alunos, "Id", "Nome");
+
+
+            // 🔹 Livros DISPONÍVEIS (NUNCA emprestados OU devolvidos)
+            var livrosDisponiveis = _context.Livros
+                .Where(l => l.Ativo)
+                .Where(l => !_context.Emprestimos.Any(e =>
+                    e.LivroId == l.Id &&
+                    (e.DataDevolucao == null) // Aberto OU Atraso
+                ))
+                .Select(l => new
+                {
+                    l.Id,
+                    Nome = l.Titulo + " (Cod: " + l.CodigoExemplar + ")"
+                })
+                .OrderBy(l => l.Nome)
+                .ToList();
+
+            ViewData["LivroId"] = new SelectList(livrosDisponiveis, "Id", "Nome");
 
             return View();
+        }
+
+        // Metodo Auxiliar DropDown
+        private async Task<IActionResult> RecarregarDropdowns(Emprestimo emprestimo)
+        {
+            var alunos = await _context.Alunos
+                .Include(a => a.Turma)
+                .Where(a => a.Ativo)
+                .Select(a => new
+                {
+                    a.Id,
+                    Nome = a.Nome + " - " + a.Turma.Nome
+                }).ToListAsync();
+
+            ViewData["AlunoId"] = new SelectList(alunos, "Id", "Nome", emprestimo.AlunoId);
+
+            var livros = await _context.Livros
+                .Where(l => l.Ativo)
+                .Where(l => !_context.Emprestimos.Any(e =>
+                    e.LivroId == l.Id &&
+                    e.DataDevolucao == null))
+                .Select(l => new
+                {
+                    l.Id,
+                    Nome = l.Titulo + " (Cod: " + l.CodigoExemplar + ")"
+                }).ToListAsync();
+
+            ViewData["LivroId"] = new SelectList(livros, "Id", "Nome", emprestimo.LivroId);
+
+            return View(emprestimo);
         }
 
         // POST: Emprestimos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,AlunoId,LivroId,DataEmprestimo,DataPrevistaDevolucao")] Emprestimo emprestimo)
+        public async Task<IActionResult> Create(Emprestimo emprestimo)
         {
-            // Validação de aluno ativo
-            var alunoValido = await _context.Alunos.AnyAsync(a => a.Id == emprestimo.AlunoId && a.Ativo);
-            if (!alunoValido)
+            // 🔹 Aluno ativo
+            if (!await _context.Alunos.AnyAsync(a => a.Id == emprestimo.AlunoId && a.Ativo))
                 ModelState.AddModelError("AlunoId", "Aluno inválido ou inativo.");
 
-            // Validação de livro ativo
-            var livroValido = await _context.Livros.AnyAsync(l => l.Id == emprestimo.LivroId && l.Ativo);
-            if (!livroValido)
+            // 🔹 Livro ativo
+            if (!await _context.Livros.AnyAsync(l => l.Id == emprestimo.LivroId && l.Ativo))
                 ModelState.AddModelError("LivroId", "Livro inválido ou inativo.");
+
+            // 🚨 LIVRO NÃO PODE TER EMPRESTIMO ATIVO (Aberto OU Atraso)
+            var livroBloqueado = await _context.Emprestimos.AnyAsync(e =>
+                e.LivroId == emprestimo.LivroId &&
+                e.DataDevolucao == null);
+
+            if (livroBloqueado)
+                ModelState.AddModelError("LivroId", "Este livro já está emprestado e não foi devolvido.");
+
+            // Datas
+            if (emprestimo.DataPrevistaDevolucao < emprestimo.DataEmprestimo)
+                ModelState.AddModelError("DataPrevistaDevolucao", "A data prevista não pode ser menor que a data do empréstimo.");
 
             if (ModelState.IsValid)
             {
@@ -128,10 +194,8 @@ namespace Acervo_Leitor.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Recarregar dropdowns se houver erro
-            ViewData["AlunoId"] = new SelectList(_context.Alunos.Where(a => a.Ativo), "Id", "Nome", emprestimo.AlunoId);
-            ViewData["LivroId"] = new SelectList(_context.Livros.Where(l => l.Ativo), "Id", "Titulo", emprestimo.LivroId);
-            return View(emprestimo);
+            // Recarregar dropdowns se falhar
+            return await RecarregarDropdowns(emprestimo);
         }
 
         // GET: Emprestimos/Edit/5

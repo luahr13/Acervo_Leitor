@@ -13,24 +13,27 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="AlunoId" class="control-label"></label>
-                <select asp-for="AlunoId" asp-items="ViewBag.AlunoId" class="form-control">
+                <label asp-for="AlunoId"></label>
+                <select id="AlunoId" asp-for="AlunoId" asp-items="ViewBag.AlunoId" class="form-select">
                     <option value="">-- Selecione o aluno --</option>
                 </select>
                 <span asp-validation-for="AlunoId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="LivroId" class="control-label"></label>
-                <select asp-for="LivroId" class="form-control" asp-items="ViewBag.LivroId">
+                <label asp-for="LivroId"></label>
+                <select id="LivroId" asp-for="LivroId" asp-items="ViewBag.LivroId" class="form-select">
                     <option value="">-- Selecione o livro --</option>
                 </select>
                 <span asp-validation-for="LivroId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="DataEmprestimo" class="control-label"></label>
                 <input asp-for="DataEmprestimo" class="form-control" />
                 <span asp-validation-for="DataEmprestimo" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="DataPrevistaDevolucao" class="control-label"></label>
                 <input asp-for="DataPrevistaDevolucao" class="form-control" />
@@ -48,5 +51,24 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#AlunoId').select2({
+                placeholder: "Digite o nome do aluno",
+                allowClear: true
+            });
+
+            $('#LivroId').select2({
+                placeholder: "Digite o nome do livro",
+                allowClear: true
+            });
+        });
+    </script>
 }

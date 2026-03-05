@@ -4,90 +4,95 @@
     ViewData["Title"] = "Detalhes do Empréstimo";
 }
 
-<h1>Detalhes</h1>
-
-<div>
-    <h4>Empréstimo</h4>
-    <hr />
-
-    <dl class="row">
-        <dt class="col-sm-3">
-            Aluno
-        </dt>
-        <dd class="col-sm-9">
-            @Model.Aluno?.Nome
-        </dd>
-
-        <dt class="col-sm-3">
-            Livro
-        </dt>
-        <dd class="col-sm-9">
-            @Model.Livro?.Titulo
-        </dd>
-
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.DataEmprestimo)
-        </dt>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.DataEmprestimo)
-        </dd>
-
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.DataPrevistaDevolucao)
-        </dt>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.DataPrevistaDevolucao)
-        </dd>
-
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.DataDevolucao)
-        </dt>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.DataDevolucao)
-        </dd>
-    </dl>
-</div>
-
-<hr />
-
-@if (Model.DataDevolucao == null)
-{
-    <h5>Registrar devolução</h5>
-
-    <form asp-action="DarBaixa" method="post">
-        @Html.AntiForgeryToken()
-
-        <input type="hidden" name="id" value="@Model.Id" />
-
-        <div class="form-group">
-            <label for="dataDevolucao">Data da devolução</label>
-            <input type="date"
-                   id="dataDevolucao"
-                   name="dataDevolucao"
-                   class="form-control"
-                   value="@DateTime.Now.ToString("yyyy-MM-dd")"
-                   required />
-        </div>
-
-        <button type="submit" class="btn btn-success mt-2">
-            Confirmar baixa
-        </button>
-    </form>
-}
-else
-{
-    <div class="alert alert-success mt-3">
-        ✔ Empréstimo finalizado em
-        <strong>@Model.DataDevolucao?.ToString("dd/MM/yyyy")</strong>
+<div class="detail-container">
+    <div class="detail-header">
+        <h1>Detalhes do Empréstimo</h1>
     </div>
-}
 
-<div class="mt-4">
+    <div class="detail-card">
+        <h4>🔄 Empréstimo</h4>
+        <div class="detail-list">
+            <div class="detail-item">
+                <div class="detail-label">Aluno</div>
+                <div class="detail-value">@Model.Aluno?.Nome</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Livro</div>
+                <div class="detail-value">@Model.Livro?.Titulo</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">@Html.DisplayNameFor(model => model.DataEmprestimo)</div>
+                <div class="detail-value">@Html.DisplayFor(model => model.DataEmprestimo)</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">@Html.DisplayNameFor(model => model.DataPrevistaDevolucao)</div>
+                <div class="detail-value">@Html.DisplayFor(model => model.DataPrevistaDevolucao)</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">@Html.DisplayNameFor(model => model.DataDevolucao)</div>
+                <div class="detail-value">
+                    @if (Model.DataDevolucao == null)
+                    {
+                        <span class="badge bg-warning">Pendente</span>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(model => model.DataDevolucao)
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
     @if (Model.DataDevolucao == null)
     {
-        <a asp-action="Edit" asp-route-id="@Model.Id">Editar</a>
-        <span> | </span>
+        <div class="form-card">
+            <h4>📝 Registrar Devolução</h4>
+            <form asp-action="DarBaixa" method="post">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <div class="form-group">
+                    <label for="dataDevolucao" class="control-label">Data da Devolução</label>
+                    <input type="date"
+                           id="dataDevolucao"
+                           name="dataDevolucao"
+                           class="form-control"
+                           value="@DateTime.Now.ToString("yyyy-MM-dd")"
+                           required />
+                </div>
+
+                <div class="action-buttons-footer">
+                    <button type="submit" class="btn btn-sm btn-save-subtle">
+                        Confirmar Devolução
+                    </button>
+                    <a asp-action="Index" class="btn btn-sm btn-clear-subtle">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    }
+    else
+    {
+        <div class="detail-card" style="background-color: #f0fdf4; border-left: 4px solid #10b981;">
+            <h4 style="color: #10b981;">✔ Empréstimo Finalizado</h4>
+            <p style="margin: 0; color: #047857;">
+                Devolução registrada em <strong>@Model.DataDevolucao?.ToString("dd/MM/yyyy")</strong>
+            </p>
+        </div>
     }
 
-    <a asp-action="Index">Voltar para a lista</a>
+    <div class="action-buttons-footer" style="margin-top: 30px;">
+        @if (Model.DataDevolucao == null)
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-edit-subtle">
+                Editar
+            </a>
+        }
+        <a asp-action="Index" class="btn btn-sm btn-clear-subtle">
+            Voltar
+        </a>
+    </div>
 </div>

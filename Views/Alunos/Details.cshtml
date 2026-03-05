@@ -1,42 +1,51 @@
 ﻿@model Acervo_Leitor.Models.Aluno
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes do Aluno";
 }
 
-<h1>Detalhes</h1>
+<div class="detail-container">
+    <div class="detail-header">
+        <h1>Detalhes do Aluno</h1>
+    </div>
 
-<div>
-    <h4>Aluno</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Turma)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Turma.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Telefone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Telefone)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ativo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ativo)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Editar</a> |
-    <a asp-action="Index">Voltar para a lista</a>
+    <div class="detail-card">
+        <h4>👨‍🎓 Aluno</h4>
+        <div class="detail-list">
+            <div class="detail-item">
+                <div class="detail-label">@Html.DisplayNameFor(model => model.Nome)</div>
+                <div class="detail-value">@Html.DisplayFor(model => model.Nome)</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">@Html.DisplayNameFor(model => model.Turma)</div>
+                <div class="detail-value">@Html.DisplayFor(model => model.Turma.Nome)</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">@Html.DisplayNameFor(model => model.Telefone)</div>
+                <div class="detail-value">@Html.DisplayFor(model => model.Telefone)</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">@Html.DisplayNameFor(model => model.Ativo)</div>
+                <div class="detail-value">
+                    @if (Model?.Ativo == true)
+                    {
+                        <span class="badge bg-success">Ativo</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Inativo</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons-footer">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-sm btn-edit-subtle">
+            Editar
+        </a>
+        <a asp-action="Index" class="btn btn-sm btn-clear-subtle">
+            Voltar
+        </a>
+    </div>
 </div>

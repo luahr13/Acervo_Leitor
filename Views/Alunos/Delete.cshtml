@@ -1,45 +1,58 @@
 ﻿@model Acervo_Leitor.Models.Aluno
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Deletar Aluno";
 }
 
-<h1>Deletar</h1>
+<div class="detail-container">
+    <div class="detail-header">
+        <h1>Deletar Aluno</h1>
+    </div>
 
-<h3>Está certo disto?</h3>
-<div>
-    <h4>Aluno</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Turma)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Turma.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Telefone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Telefone)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ativo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ativo)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Deletar" class="btn btn-danger" /> |
-        <a asp-action="Index">Voltar para a lista</a>
-    </form>
+    <div class="delete-confirmation">
+        <h3>⚠️ Tem certeza que deseja deletar?</h3>
+        
+        <div class="detail-card">
+            <h4>👨‍🎓 Aluno</h4>
+            <div class="detail-list">
+                <div class="detail-item">
+                    <div class="detail-label">@Html.DisplayNameFor(model => model.Nome)</div>
+                    <div class="detail-value">@Html.DisplayFor(model => model.Nome)</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">@Html.DisplayNameFor(model => model.Turma)</div>
+                    <div class="detail-value">@Html.DisplayFor(model => model.Turma.Nome)</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">@Html.DisplayNameFor(model => model.Telefone)</div>
+                    <div class="detail-value">@Html.DisplayFor(model => model.Telefone)</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">@Html.DisplayNameFor(model => model.Ativo)</div>
+                    <div class="detail-value">
+                        @if (Model?.Ativo == true)
+                        {
+                            <span class="badge bg-success">Ativo</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Inativo</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <div class="delete-button-group">
+                <button type="submit" class="btn btn-sm btn-delete-confirm">
+                    Confirmar Deleção
+                </button>
+                <a asp-action="Index" class="btn btn-sm btn-clear-subtle">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
 </div>

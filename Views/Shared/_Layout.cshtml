@@ -30,23 +30,53 @@
         </nav>
     </header>
 
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
     <div class="app-layout">
 
         <!-- SIDEBAR -->
         <nav class="sidebar">
-            <ul class="nav flex-column pt-3">
-                <li class="nav-item px-2">
-                    <a class="nav-link" asp-controller="Turmas" asp-action="Index">🏫 Turmas</a>
+            <ul class="nav flex-column">
+                
+                <!-- SEÇÃO PRINCIPAL -->
+                <li class="sidebar-title">Navegação</li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Index">
+                        <svg class="sidebar-icon" data-feather="home"></svg> Dashboard
+                    </a>
                 </li>
-                <li class="nav-item px-2">
-                    <a class="nav-link" asp-controller="Alunos" asp-action="Index">👨‍🎓 Alunos</a>
+
+                <!-- SEÇÃO CADASTROS -->
+                <li class="sidebar-title" style="margin-top: 20px;">Cadastros</li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Turmas" asp-action="Index">
+                        <svg class="sidebar-icon" data-feather="layers"></svg> Turmas
+                    </a>
                 </li>
-                <li class="nav-item px-2">
-                    <a class="nav-link" asp-controller="Livros" asp-action="Index">📚 Livros</a>
+                
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Alunos" asp-action="Index">
+                        <svg class="sidebar-icon" data-feather="users"></svg> Alunos
+                    </a>
                 </li>
-                <li class="nav-item px-2">
-                    <a class="nav-link" asp-controller="Emprestimos" asp-action="Index">🔄 Empréstimos</a>
+                
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Livros" asp-action="Index">
+                        <svg class="sidebar-icon" data-feather="book"></svg> Livros
+                    </a>
                 </li>
+
+                <!-- SEÇÃO OPERAÇÕES -->
+                <li class="sidebar-title" style="margin-top: 20px;">Operações</li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Emprestimos" asp-action="Index">
+                        <svg class="sidebar-icon" data-feather="refresh-cw"></svg> Empréstimos
+                    </a>
+                </li>
+                
             </ul>
         </nav>
 
@@ -68,6 +98,14 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js"></script>
+    
+    <script>
+        // Renderizar ícones Feather Icons
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    </script>
+    
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>

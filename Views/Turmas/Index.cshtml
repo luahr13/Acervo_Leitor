@@ -13,7 +13,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fw-bold">📚 Turmas</h2>
 
-        <a asp-action="Create" class="btn btn-primary shadow-sm">
+        <a asp-action="Create" class="btn btn-create-subtle shadow-sm">
             <i class="bi bi-plus-circle"></i> Nova Turma
         </a>
     </div>
@@ -33,11 +33,11 @@
 
                 <!-- BOTÕES -->
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-success btn-sm px-3">
+                    <button type="submit" class="btn btn-filter-subtle btn-sm px-3">
                         🔍 Filtrar
                     </button>
 
-                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-3">
+                    <a asp-action="Index" class="btn btn-clear-subtle btn-sm px-3">
                         ❌ Limpar
                     </a>
                 </div>
@@ -88,16 +88,16 @@
                             </td>
 
                             <td class="text-end">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
-                                    ✏️ Editar
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-edit-subtle">
+                                    Editar
                                 </a>
 
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">
-                                    🔍 Detalhes
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-details-subtle">
+                                    Detalhes
                                 </a>
 
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
-                                    🗑️ Deletar
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-delete-subtle">
+                                    Deletar
                                 </a>
                             </td>
                         </tr>

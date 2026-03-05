@@ -1,36 +1,47 @@
 ﻿@model Acervo_Leitor.Models.Turma
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes da Turma";
 }
 
-<h1>Detailhes</h1>
+<div class="detail-container">
+    <div class="detail-header">
+        <h1>Detalhes da Turma</h1>
+    </div>
 
-<div>
-    <h4>Turma</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AnoLetivo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AnoLetivo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ativa)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ativa)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Editar</a> |
-    <a asp-action="Index">Voltar para a lista</a>
+    <div class="detail-card">
+        <h4>📚 Turma</h4>
+        <div class="detail-list">
+            <div class="detail-item">
+                <div class="detail-label">@Html.DisplayNameFor(model => model.Nome)</div>
+                <div class="detail-value">@Html.DisplayFor(model => model.Nome)</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">@Html.DisplayNameFor(model => model.AnoLetivo)</div>
+                <div class="detail-value">@Html.DisplayFor(model => model.AnoLetivo)</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">@Html.DisplayNameFor(model => model.Ativa)</div>
+                <div class="detail-value">
+                    @if (Model?.Ativa == true)
+                    {
+                        <span class="badge bg-success">Ativa</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Inativa</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons-footer">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-sm btn-edit-subtle">
+            Editar
+        </a>
+        <a asp-action="Index" class="btn btn-sm btn-clear-subtle">
+            Voltar
+        </a>
+    </div>
 </div>

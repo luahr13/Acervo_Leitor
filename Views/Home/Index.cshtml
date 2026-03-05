@@ -2,91 +2,531 @@
     ViewData["Title"] = "Acervo Leitor";
 }
 
-<div class="container-fluid py-4">
+<style>
+    /* ========== HERO SECTION ========== */
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        color: white;
+        padding: 30px 20px;
+        border-radius: 0 0 20px 20px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        min-height: 20vh;
+    }
 
-    <!-- HEADER -->
-    <div class="text-center mb-5">
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 400px;
+        height: 400px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        transform: translate(100px, -100px);
+    }
 
-        <h1 class="fw-bold text-primary">Acervo Leitor</h1>
-        <p class="text-muted fs-5">
-            Sistema de Gestão de Biblioteca Escolar
-        </p>
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        transform: translate(-100px, 100px);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-section h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+        letter-spacing: -1px;
+    }
+
+    .hero-section p {
+        font-size: 1rem;
+        opacity: 0.95;
+        font-weight: 300;
+    }
+
+    /* ========== DASHBOARD CARDS ========== */
+    .stat-card {
+        background: white;
+        border: none;
+        border-radius: 10px;
+        padding: 14px;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        text-decoration: none;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        background: white; /* remove qualquer mudança de cor */
+        text-decoration: none;
+    }
+
+    .stat-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .stat-icon {
+        width: 24px;
+        height: 24px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 6px;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @@keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-5px); }
+    }
+
+    .stat-card.primary { border-top: 4px solid #667eea; }
+    .stat-card.success { border-top: 4px solid #10b981; }
+    .stat-card.warning { border-top: 4px solid #f59e0b; }
+    .stat-card.danger { border-top: 4px solid #ef4444; }
+
+    /* same typography as action-card h4 */
+    .stat-number {
+        font-size: 0.9rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 6px 0;
+    }
+
+    .stat-title {
+        font-size: 0.9rem;
+        color: #1f2937;
+        font-weight: 700;
+        margin: 0 0 4px 0;
+    }
+
+    .stat-desc {
+        font-size: 0.75rem;
+        color: #6b7280;
+        margin: 0;
+    }
+
+    /* ========== ACTION BUTTONS ========== */
+    .action-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 16px;
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .action-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        transition: left 0.3s ease;
+        z-index: -1;
+    }
+
+    .action-card:hover {
+        transform: translateY(-3px) scale(1.02);
+        border-color: #667eea;
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+    }
+
+    .action-card:hover::before {
+        left: 0;
+    }
+
+    .action-card:hover h4,
+    .action-card:hover p {
+        color: white;
+    }
+
+    .action-icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+    .action-card h4 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+        transition: color 0.3s ease;
+    }
+
+    .action-card p {
+        color: #9ca3af;
+        font-size: 0.85rem;
+        margin: 0;
+        transition: color 0.3s ease;
+    }
+
+    /* ========== SECTIONS ========== */
+    .section-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 20px;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        border-radius: 2px;
+    }
+
+    .container-custom {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* ========== SPACING ========== */
+    .section-spacing {
+        padding: 35px 0;
+    }
+
+    /* ========== RESPONSIVO ========== */
+    @@media (max-width: 1200px) {
+        .hero-section h1 {
+            font-size: 2.2rem;
+        }
+        
+        .section-spacing {
+            padding: 28px 0;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .hero-section {
+            padding: 30px 15px;
+        }
+
+        .hero-section h1 {
+            font-size: 1.8rem;
+            margin-bottom: 3px;
+        }
+
+        .hero-section p {
+            font-size: 0.9rem;
+        }
+
+        .stat-card {
+            padding: 16px;
+        }
+
+        .stat-icon {
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            margin: 6px 0;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .section-spacing {
+            padding: 20px 0;
+        }
+
+        .action-card {
+            padding: 18px;
+        }
+
+        .action-card h4 {
+            font-size: 1rem;
+            margin-bottom: 3px;
+        }
+
+        .action-card p {
+            font-size: 0.8rem;
+        }
+
+        .action-icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .hero-section {
+            padding: 20px 12px;
+        }
+
+        .hero-section h1 {
+            font-size: 1.3rem;
+            margin-bottom: 2px;
+        }
+
+        .hero-section p {
+            font-size: 0.8rem;
+        }
+
+        .hero-section::before,
+        .hero-section::after {
+            display: none;
+        }
+
+        .stat-card {
+            padding: 12px;
+        }
+
+        .stat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+
+        .stat-number {
+            font-size: 1.2rem;
+            margin: 4px 0;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .section-title::after {
+            width: 40px;
+            height: 2px;
+        }
+
+        .container-custom {
+            padding: 0 12px;
+        }
+
+        .section-spacing {
+            padding: 12px 0;
+        }
+
+        .action-card {
+            padding: 14px;
+        }
+
+        .action-card h4 {
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .action-card p {
+            font-size: 0.7rem;
+        }
+
+        .action-icon {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+    }
+
+    /* ========== ULTRA MOBILE (< 400px) ========== */
+    @@media (max-width: 400px) {
+        .hero-section {
+            padding: 15px 10px;
+        }
+
+        .hero-section h1 {
+            font-size: 1.1rem;
+        }
+
+        .hero-section p {
+            font-size: 0.75rem;
+        }
+
+        .stat-card {
+            padding: 10px;
+        }
+
+        .stat-icon {
+            font-size: 1.3rem;
+            margin-bottom: 3px;
+        }
+
+        .stat-number {
+            font-size: 1rem;
+            margin: 3px 0;
+        }
+
+        .stat-label {
+            font-size: 0.6rem;
+        }
+
+        .section-title {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+
+        .container-custom {
+            padding: 0 10px;
+        }
+
+        .section-spacing {
+            padding: 10px 0;
+        }
+
+        .action-card {
+            padding: 12px;
+        }
+
+        .action-card h4 {
+            font-size: 0.85rem;
+            margin-bottom: 1px;
+        }
+
+        .action-card p {
+            font-size: 0.65rem;
+            line-height: 1.2;
+        }
+
+        .action-icon {
+            font-size: 1.3rem;
+            margin-bottom: 3px;
+        }
+    }
+</style>
+
+<!-- HERO SECTION -->
+<div class="hero-section">
+    <div class="hero-content text-center">
+        <h1>Acervo Leitor</h1>
+        <p>Sistema Inteligente de Gestão de Biblioteca Escolar</p>
     </div>
+</div>
 
-    <!-- DASHBOARD CARDS -->
-    <div class="row g-4 mb-5">
-
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 text-center p-3 position-relative">
-                <a asp-controller="Livros" asp-action="Index" class="stretched-link"></a>
-
-                <div class="fs-1 text-primary">📚</div>
-                <h5 class="fw-bold">Livros</h5>
-                <p class="fs-3 fw-bold">@ViewBag.LivrosAtivos</p>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 text-center p-3">
-                <a asp-controller="Alunos" asp-action="Index" class="stretched-link"></a>
-
-                <div class="fs-1 text-success">👩‍🎓</div>
-                <h5 class="fw-bold">Alunos</h5>
-                <p class="fs-3 fw-bold text-dark">@ViewBag.AlunosAtivos</p>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 text-center p-3">
-                <a asp-controller="Emprestimos" asp-action="Index" class="stretched-link"></a>
-
-                <div class="fs-1 text-warning">🔄</div>
-                <h5 class="fw-bold">Empréstimos</h5>
-                <p class="fs-3 fw-bold text-dark">@ViewBag.EmprestimosBaixa</p>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 text-center p-3 position-relative">
-
-                <a asp-controller="Emprestimos"
-                   asp-action="Index"
-                   asp-route-status="Atraso"
-                   class="stretched-link"></a>
-
-                <div class="fs-1 text-danger">⏰</div>
-                <h5 class="fw-bold">Atrasados</h5>
-                <p class="fs-3 fw-bold text-dark">@ViewBag.EmprestimosAtraso</p>
-
-            </div>
-        </div>
-
-    </div>
-
-    <!-- AÇÕES RÁPIDAS -->
-    <div class="row g-4">
-
-        <div class="col-md-4">
-            <a asp-controller="Livros" asp-action="Create" class="card shadow-sm border-0 p-4 text-decoration-none text-dark h-100">
-                <h4>📘 Cadastrar Livro</h4>
-                <p class="text-muted">Adicionar novo exemplar ao acervo</p>
+<!-- DASHBOARD SECTION -->
+<div class="section-spacing container-custom">
+    <h2 class="section-title">Visão Geral</h2>
+    
+    <div class="row g-2">
+        <!-- LIVROS -->
+        <div class="col-lg-3 col-md-6">
+            <a asp-controller="Livros" asp-action="Index" class="card stat-card primary">
+                <div class="stat-icon" data-feather="book"></div>
+                <h4 class="stat-title">Livros</h4>
+                <p class="stat-number">@ViewBag.LivrosAtivos</p>
+                <p class="stat-desc">Total de exemplares cadastrados</p>
             </a>
         </div>
 
-        <div class="col-md-4">
-            <a asp-controller="Emprestimos" asp-action="Create" class="card shadow-sm border-0 p-4 text-decoration-none text-dark h-100">
-                <h4>🔄 Novo Empréstimo</h4>
-                <p class="text-muted">Registrar empréstimo de livro</p>
+        <!-- ALUNOS -->
+        <div class="col-lg-3 col-md-6">
+            <a asp-controller="Alunos" asp-action="Index" class="card stat-card success">
+                <div class="stat-icon" data-feather="users"></div>
+                <h4 class="stat-title">Alunos</h4>
+                <p class="stat-number">@ViewBag.AlunosAtivos</p>
+                <p class="stat-desc">Alunos com cadastro ativo</p>
             </a>
         </div>
 
-        <div class="col-md-4">
-            <a asp-controller="Alunos" asp-action="Index" class="card shadow-sm border-0 p-4 text-decoration-none text-dark h-100">
-                <h4>👩‍🎓 Gerenciar Alunos</h4>
-                <p class="text-muted">Consultar e editar alunos</p>
+        <!-- EMPRÉSTIMOS -->
+        <div class="col-lg-3 col-md-6">
+            <a asp-controller="Emprestimos" asp-action="Index" class="card stat-card warning">
+                <div class="stat-icon" data-feather="refresh-cw"></div>
+                <h4 class="stat-title">Empréstimos</h4>
+                <p class="stat-number">@ViewBag.EmprestimosBaixa</p>
+                <p class="stat-desc">Empréstimos em aberto</p>
             </a>
         </div>
 
+        <!-- ATRASADOS -->
+        <div class="col-lg-3 col-md-6">
+            <a asp-controller="Emprestimos" asp-action="Index" asp-route-status="Atraso" class="card stat-card danger">
+                <div class="stat-icon" data-feather="clock"></div>
+                <h4 class="stat-title">Atrasados</h4>
+                <p class="stat-number">@ViewBag.EmprestimosAtraso</p>
+                <p class="stat-desc">Empréstimos em atraso</p>
+            </a>
+        </div>
     </div>
+</div>
 
+<!-- QUICK ACTIONS SECTION -->
+<div class="section-spacing container-custom">
+    <h2 class="section-title">Ações Rápidas</h2>
+    
+    <div class="row g-2">
+        <div class="col-lg-4 col-md-6">
+            <a asp-controller="Livros" asp-action="Create" class="action-card">
+                <div class="action-icon" data-feather="book"></div>
+                <h4>Cadastrar Livro</h4>
+                <p>Adicionar novo exemplar ao acervo</p>
+            </a>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <a asp-controller="Emprestimos" asp-action="Create" class="action-card">
+                <div class="action-icon" data-feather="refresh-cw"></div>
+                <h4>Novo Empréstimo</h4>
+                <p>Registrar empréstimo de livro</p>
+            </a>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <a asp-controller="Alunos" asp-action="Index" class="action-card">
+                <div class="action-icon" data-feather="users"></div>
+                <h4>Gerenciar Alunos</h4>
+                <p>Consultar e editar alunos cadastrados</p>
+            </a>
+        </div>
+    </div>
 </div>

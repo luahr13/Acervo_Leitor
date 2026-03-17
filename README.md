@@ -1,91 +1,162 @@
-# 📚 Sistema de Gestão de Biblioteca
+📚 Acervo Leitor
 
-Sistema desenvolvido para gerenciamento completo de biblioteca, permitindo o controle de livros, usuários, empréstimos e regras administrativas de forma organizada e segura.
+Sistema completo de gestão de biblioteca, desenvolvido em ASP.NET Core, com autenticação, controle de empréstimos e modo dual de execução (DEV e DEMO).
 
-## 🚀 Objetivo do Projeto
+🚀 Tecnologias Utilizadas
 
-O sistema tem como finalidade facilitar a administração de acervos, automatizar processos de empréstimo e devolução, além de manter controle eficiente de registros.
+ASP.NET Core
 
----
+Entity Framework Core
 
-## ⚙️ Funcionalidades
+Identity (Autenticação e Roles)
 
-- 📖 Cadastro de livros
-- 👤 Cadastro de usuários/leitores
-- 🔄 Controle de empréstimos
-- 📅 Registro de devoluções
-- 🔍 Consulta de acervo
-- 🛡️ Regras de validação para evitar conflitos
-- 🗄️ Integração com banco de dados relacional
+SQL Server
 
----
+SQLite (Modo Demo)
 
-## 🏗️ Tecnologias Utilizadas
+Bootstrap
 
-- Backend: (ex: PHP / Laravel)
-- Banco de Dados: (ex: MySQL / SQL Server)
-- Frontend: (ex: HTML, CSS, JavaScript)
-- Ambiente de desenvolvimento: (ex: Docker / WSL / WAMP)
+Razor Views
 
----
+.NET 9
 
-## 📂 Estrutura do Projeto
+🎯 Objetivo do Sistema
 
+O Acervo Leitor foi desenvolvido para:
 
-/app
-/database
-/routes
-/resources
-/config
+Gerenciar livros
 
+Controlar alunos
 
----
+Registrar empréstimos
 
-## 🔐 Regras do Sistema
+Controlar devoluções
 
-- Controle de empréstimo com validação de disponibilidade
-- Registro de exclusão lógica (soft delete)
-- Proteção de dados e integridade relacional
+Bloquear empréstimos inválidos
 
----
+Garantir segurança de acesso com login
 
-## 🛠️ Como Executar o Projeto
+Permitir modo demonstração offline
 
-1. Clone o repositório:
-```bash
-git clone <url-do-repositorio>
+🔐 Sistema de Autenticação
 
-Instale as dependências:
+O projeto utiliza ASP.NET Identity com:
 
-composer install
-npm install
+Login obrigatório
 
-Configure o arquivo .env
+Sistema de Roles
 
-Execute as migrações:
+Role padrão: Admin
 
-php artisan migrate
+Usuário demo criado automaticamente no modo demo
 
-Inicie o servidor:
+🧪 Modo de Execução
 
-php artisan serve
-📌 Status do Projeto
+O sistema possui dois modos automáticos:
 
-Em desenvolvimento / Em produção (ajustar conforme necessário).
+🧠 Modo Desenvolvimento (Visual Studio)
 
-👨‍💻 Desenvolvedor
+Banco: SQL Server
 
-Projeto desenvolvido para fins acadêmicos e/ou empresariais.
+Ambiente: Development
 
+Usado ao rodar pelo Visual Studio ou dotnet run
 
----
+📦 Modo Demo (EXE Publicado)
 
-Se você quiser, eu posso:
+Banco: SQLite (demo.db)
 
-- 🔥 Deixar o README mais **profissional estilo empresa**
-- 📊 Adaptar para **Laravel especificamente**
-- 🐳 Adicionar seção de **Docker**
-- 🏢 Deixar no padrão de projeto sigiloso corporativo
-- 🎯 Ou transformar em README mais minimalista para commit rápido
+Ativado automaticamente quando:
 
-Qual estilo você quer? 🚀
+Está rodando como .exe
+
+Existe o arquivo demo.db na pasta do executável
+
+Ideal para demonstrações offline
+
+Usuário criado automaticamente:
+
+Email: demo@demo.com
+Senha: Demo123
+Role: Admin
+📂 Estrutura de Publicação
+
+Após executar:
+
+dotnet publish -c Release -r win-x64 --self-contained true
+
+O sistema será gerado em:
+
+bin/Release/net9.0/win-x64/publish
+
+Para modo demo funcionar, o arquivo:
+
+demo.db
+
+deve estar dentro da pasta publish.
+
+▶️ Como Executar
+🔹 No Visual Studio
+
+Basta pressionar F5.
+
+🔹 Pelo Executável
+
+Ir até a pasta:
+
+publish
+
+Executar:
+
+Acervo Leitor.exe
+🛠 Como Publicar Nova Versão
+
+Dentro da pasta do projeto:
+
+dotnet clean
+dotnet publish -c Release -r win-x64 --self-contained true
+
+Ou versão compacta:
+
+dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained true
+🗄 Banco de Dados
+Produção
+
+SQL Server
+
+Configurado em appsettings.json
+
+Demo
+
+SQLite
+
+Arquivo: demo.db
+
+Criado automaticamente no primeiro uso
+
+🔒 Regras de Negócio
+
+Livros com empréstimos ABERTO ou ATRASO não podem ser reutilizados
+
+Controle de status de empréstimo
+
+Sistema seguro de exclusão lógica
+
+Controle por autenticação obrigatória
+
+📌 Requisitos
+
+.NET 9 SDK
+
+SQL Server (para modo desenvolvimento)
+
+Windows (para execução do .exe publicado)
+
+👨‍💻 Autor
+
+Projeto desenvolvido por Luahr Veiga
+
+📄 Licença
+
+Uso interno / Educacional.
+Distribuição mediante autorização.

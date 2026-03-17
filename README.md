@@ -1,95 +1,92 @@
-📚 Acervo Leitor
+# 📚 Acervo Leitor
 
-Sistema completo de gestão de biblioteca, desenvolvido em ASP.NET Core, com autenticação, controle de empréstimos e modo dual de execução (DEV e DEMO).
+Sistema completo de gestão de biblioteca, desenvolvido em **ASP.NET Core**, com autenticação, controle de empréstimos e modo dual de execução (**DEV e DEMO**).
 
-🚀 Tecnologias Utilizadas
+---
 
-ASP.NET Core
+## 🚀 Tecnologias Utilizadas
 
-Entity Framework Core
+- ASP.NET Core  
+- .NET 9  
+- Entity Framework Core  
+- ASP.NET Identity (Autenticação e Roles)  
+- SQL Server  
+- SQLite (Modo Demo)  
+- Bootstrap  
+- Razor Views  
 
-Identity (Autenticação e Roles)
+---
 
-SQL Server
+## 🎯 Objetivo do Sistema
 
-SQLite (Modo Demo)
+O **Acervo Leitor** foi desenvolvido para:
 
-Bootstrap
+- 📖 Gerenciar livros  
+- 👨‍🎓 Controlar alunos  
+- 🔄 Registrar empréstimos  
+- 📅 Controlar devoluções  
+- 🚫 Bloquear empréstimos inválidos  
+- 🔐 Garantir segurança com login obrigatório  
+- 💻 Permitir modo demonstração offline  
 
-Razor Views
+---
 
-.NET 9
+## 🔐 Sistema de Autenticação
 
-🎯 Objetivo do Sistema
+O projeto utiliza **ASP.NET Identity** com:
 
-O Acervo Leitor foi desenvolvido para:
+- Login obrigatório
+- Sistema de Roles
+- Role padrão: **Admin**
+- Usuário demo criado automaticamente no modo demo
 
-Gerenciar livros
+---
 
-Controlar alunos
-
-Registrar empréstimos
-
-Controlar devoluções
-
-Bloquear empréstimos inválidos
-
-Garantir segurança de acesso com login
-
-Permitir modo demonstração offline
-
-🔐 Sistema de Autenticação
-
-O projeto utiliza ASP.NET Identity com:
-
-Login obrigatório
-
-Sistema de Roles
-
-Role padrão: Admin
-
-Usuário demo criado automaticamente no modo demo
-
-🧪 Modo de Execução
+## 🧪 Modo de Execução
 
 O sistema possui dois modos automáticos:
 
-🧠 Modo Desenvolvimento (Visual Studio)
+### 🧠 Modo Desenvolvimento (Visual Studio)
 
-Banco: SQL Server
+- Banco: **SQL Server**
+- Ambiente: **Development**
+- Usado ao rodar pelo Visual Studio ou `dotnet run`
 
-Ambiente: Development
+---
 
-Usado ao rodar pelo Visual Studio ou dotnet run
+### 📦 Modo Demo (EXE Publicado)
 
-📦 Modo Demo (EXE Publicado)
+- Banco: **SQLite**
+- Arquivo: `demo.db`
+- Ativado automaticamente quando:
+  - Está rodando como `.exe`
+  - Existe o arquivo `demo.db` na pasta do executável
 
-Banco: SQLite (demo.db)
+🔹 Ideal para demonstrações offline.
 
-Ativado automaticamente quando:
+**Usuário criado automaticamente:**
 
-Está rodando como .exe
-
-Existe o arquivo demo.db na pasta do executável
-
-Ideal para demonstrações offline
-
-Usuário criado automaticamente:
 
 Email: demo@demo.com
+
 Senha: Demo123
 Role: Admin
-📂 Estrutura de Publicação
+
+
+---
+
+## 📂 Estrutura de Publicação
 
 Após executar:
 
+```bash
 dotnet publish -c Release -r win-x64 --self-contained true
 
 O sistema será gerado em:
 
 bin/Release/net9.0/win-x64/publish
 
-Para modo demo funcionar, o arquivo:
+Para o modo demo funcionar, o arquivo:
 
 demo.db
 
@@ -115,18 +112,16 @@ Dentro da pasta do projeto:
 
 dotnet clean
 dotnet publish -c Release -r win-x64 --self-contained true
-
-Ou versão compacta:
-
+🔹 Versão compacta (Single File):
 dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained true
 🗄 Banco de Dados
-Produção
+🔵 Produção
 
 SQL Server
 
 Configurado em appsettings.json
 
-Demo
+🟢 Demo
 
 SQLite
 
@@ -142,19 +137,19 @@ Controle de status de empréstimo
 
 Sistema seguro de exclusão lógica
 
-Controle por autenticação obrigatória
+Acesso protegido por autenticação obrigatória
 
 📌 Requisitos
 
 .NET 9 SDK
 
-SQL Server (para modo desenvolvimento)
+SQL Server (modo desenvolvimento)
 
 Windows (para execução do .exe publicado)
 
 👨‍💻 Autor
 
-Projeto desenvolvido por Luahr Veiga
+Luahr Veiga
 
 📄 Licença
 
